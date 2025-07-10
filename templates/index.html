@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Math Quiz - Parth</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <span class="app-name">Parth</span>
+            <span class="app-icon"><i class="fas fa-brain"></i></span>
+        </div>
+        <nav>
+            <button id="settings" class="icon-button"><i class="fas fa-cog"></i></button>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div id="settings-panel" class="settings-panel">
+            <div class="settings-header">
+                <h2>Settings</h2>
+                <button id="close-settings-btn" class="icon-button"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="setting-group">
+                <h3>Theme</h3>
+                <div class="theme-options">
+                    <div class="theme-option dark-theme-swatch" data-theme="dark" title="Dark Theme"></div>
+                    <div class="theme-option light-theme-swatch" data-theme="light" title="Light Theme"></div>
+                    <div class="theme-option purple-theme-swatch" data-theme="purple" title="Purple Theme"></div>
+                </div>
+            </div>
+        </div>
+
+        <section id="start-section" class="screen active">
+            <h2>Welcome to the AI Math Quiz!</h2>
+            <p>Test your math skills across various topics and difficulty levels.</p>
+            <div class="input-group">
+                <label for="username">Your Name:</label>
+                <input type="text" id="username" placeholder="Enter your name" required>
+            </div>
+            <div class="input-group">
+                <label for="topic">Choose a Topic:</label>
+                <select id="topic" required>
+                    <option value="">--Select a Topic--</option>
+                    <option value="Algebra">Algebra</option>
+                    <option value="Calculus">Calculus</option>
+                    <option value="Geometry">Geometry</option>
+                    <option value="Statistics">Statistics</option>
+                    <option value="Basic Arithmetic">Basic Arithmetic</option>
+                </select>
+            </div>
+            <button id="start-btn" class="btn btn-primary"><i class="fas fa-play"></i> Start Quiz</button>
+        </section>
+
+        <section id="quiz-section" class="screen">
+            <div class="quiz-header">
+                <span id="score-text">Score: 0</span>
+                <span id="difficulty-badge" class="difficulty difficulty-1">Level 1</span>
+                <span id="skill-badge" class="skill-concept">Skill: Loading...</span>
+            </div>
+            <progress id="progress-bar" value="0" max="10"></progress>
+            <p id="progress-text">Question 0 of 10</p>
+            <div class="question-card">
+                <p id="question-text">Loading question...</p>
+                <button onclick="speakText(document.getElementById('question-text').innerText)" class="tts-icon-btn" title="Speak Question">
+                <i class="fas fa-volume-up"></i>
+                </button>
+
+                <input type="text" id="answer" placeholder="Type your answer here">
+                <div id="feedback" class="feedback hidden">
+                    <div id="feedback-judgment"></div>
+                    <button id="toggle-explanation-btn" class="btn btn-secondary btn-sm hidden">Show Explanation</button>
+                    <div id="feedback-explanation" class="hidden"></div>
+                    <button onclick="speakText(document.getElementById('feedback-explanation').innerText)" class="tts-icon-btn" title="Speak Explanation">
+                    <i class="fas fa-volume-up"></i>
+                    </button>
+                </div>
+                <div class="quiz-buttons">
+                    <button id="submit-btn" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Submit Answer</button>
+                    <button id="next-btn" class="btn btn-secondary hidden"><i class="fas fa-arrow-right"></i> Next Question</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="report-section" class="screen">
+            <h2>Quiz Complete!</h2>
+            <p id="summary-text"></p>
+            <div class="chart-container">
+                <canvas id="score-chart"></canvas>
+            </div>
+            <div id="ai-insights" class="ai-insights-section">
+                <h3>AI Insights & Recommendations</h3>
+                <p id="ai-summary">Loading summary...</p>
+                <p id="ai-recommendations">Loading recommendations...</p>
+            </div>
+            <div class="report-actions">
+                <a id="download-report" class="btn btn-primary" download="quiz_report.pdf"><i class="fas fa-download"></i> Download Full Report</a>
+                <button id="restart-btn" class="btn btn-secondary"><i class="fas fa-redo-alt"></i> Play Again</button>
+            </div>
+        </section>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
+
