@@ -1,0 +1,648 @@
+/* Basic styles */
+:root {
+    /* Dark Theme (Default) */
+    --bg-color: #2c3e50;
+    --card-bg: #34495e;
+    --text-color: #ecf0f1;
+    --input-bg: #4a6572;
+    --input-border: #607d8b;
+    --placeholder-color: #b0bec5;
+    --primary-btn-bg: #3498db;
+    --primary-btn-hover-bg: #2980b9;
+    --secondary-btn-bg: #7f8c8d;
+    --secondary-btn-hover-bg: #617374;
+    --accent-color: #e74c3c; /* Used for difficulty 5, danger */
+    --success: #27ae60;
+    --danger: #e74c3c;
+    --info: #2980b9;
+    --border-radius: 8px;
+    --shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+
+    /* Logo gradient for dark theme */
+    --logo-gradient-start: #a78bfa;
+    --logo-gradient-end: #f9a8d4;
+}
+
+/* Light Theme */
+body.light-theme {
+    --bg-color: #f0f2f5;
+    --card-bg: #ffffff;
+    --text-color: #34495e;
+    --input-bg: #e0e6ed;
+    --input-border: #ccd0d5;
+    --placeholder-color: #7b8c9d;
+    --primary-btn-bg: #4285f4;
+    --primary-btn-hover-bg: #3367d6;
+    --secondary-btn-bg: #bdc3c7;
+    --secondary-btn-hover-bg: #a1a9ad;
+    --accent-color: #ea4335; /* danger */
+    --success: #34a853;
+    --danger: #ea4335;
+    --info: #4285f4;
+    --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+
+    /* Logo gradient for light theme (can be same or different) */
+    --logo-gradient-start: #8e44ad;
+    --logo-gradient-end: #3498db;
+}
+
+/* Purple Theme */
+body.purple-theme {
+    --bg-color: #36294a;
+    --card-bg: #4a3c63;
+    --text-color: #f3e9f8;
+    --input-bg: #63587b;
+    --input-border: #7e7194;
+    --placeholder-color: #c9bada;
+    --primary-btn-bg: #8e44ad;
+    --primary-btn-hover-bg: #7b379c;
+    --secondary-btn-bg: #a67cde;
+    --secondary-btn-hover-bg: #8d62c1;
+    --accent-color: #e74c3c; /* danger */
+    --success: #2ecc71;
+    --danger: #e74c3c;
+    --info: #3498db;
+    --shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+
+    /* Logo gradient for purple theme */
+    --logo-gradient-start: #f7b0c9;
+    --logo-gradient-end: #f0f2f5;
+}
+
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column; /* Stacks header and container vertically */
+    justify-content: flex-start; /* Aligns content to the top */
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0; /* Removed padding here to allow header to be full width */
+    box-sizing: border-box;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Main application header */
+header {
+    width: 100%; /* Make header span full width */
+    background-color: var(--card-bg); /* Give header a background */
+    box-shadow: var(--shadow); /* Add shadow for depth */
+    padding: 15px 20px; /* Consistent padding */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px; /* Space between header and container */
+    box-sizing: border-box; /* Include padding in width */
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.app-name {
+    font-size: 2em;
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+/* Brain icon styling with gradient */
+.app-icon {
+    font-size: 2em;
+    background: linear-gradient(45deg, var(--logo-gradient-start), var(--logo-gradient-end));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent; /* Makes the text transparent for gradient */
+    display: inline-block; /* Required for background-clip */
+    transition: transform 0.3s ease-in-out;
+}
+
+.app-icon:hover {
+    transform: rotate(10deg) scale(1.1);
+}
+
+header nav {
+    display: flex;
+    align-items: center;
+}
+
+.icon-button {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 1.8em;
+    cursor: pointer;
+    transition: color 0.2s ease, background-color 0.2s ease;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.icon-button:hover {
+    color: var(--primary-btn-bg);
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.container {
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 30px;
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    min-height: 500px; /* Ensure enough height for transitions */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Screens management */
+.screen {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    padding: 0 10px;
+    box-sizing: border-box;
+}
+
+.screen.active {
+    display: flex;
+    opacity: 1;
+    position: relative;
+    transform: none;
+    top: auto;
+    left: auto;
+}
+
+
+/* Input Group */
+.input-group {
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+.input-group input[type="text"],
+.input-group select {
+    width: calc(100% - 20px);
+    padding: 12px 10px;
+    border: 1px solid var(--input-border);
+    border-radius: var(--border-radius);
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    font-size: 1em;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.input-group input[type="text"]::placeholder {
+    color: var(--placeholder-color);
+}
+
+.input-group input[type="text"]:focus,
+.input-group select:focus {
+    border-color: var(--primary-btn-bg);
+}
+
+/* Buttons */
+.btn {
+    padding: 12px 25px;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-primary {
+    background-color: var(--primary-btn-bg);
+    color: var(--text-color);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-btn-hover-bg);
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background-color: var(--secondary-btn-bg);
+    color: var(--text-color);
+}
+
+.btn-secondary:hover {
+    background-color: var(--secondary-btn-hover-bg);
+    transform: translateY(-2px);
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-sm {
+    padding: 8px 15px;
+    font-size: 0.85em;
+}
+
+
+/* Quiz Section specific styles */
+.quiz-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 15px;
+    padding: 0 10px;
+}
+
+progress {
+    width: 100%;
+    height: 10px;
+    -webkit-appearance: none;
+    appearance: none;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+progress::-webkit-progress-bar {
+    background-color: var(--input-border);
+    border-radius: 5px;
+}
+
+progress::-webkit-progress-value {
+    background-color: var(--primary-btn-bg);
+    border-radius: 5px;
+    transition: width 0.3s ease;
+}
+
+progress::-moz-progress-bar {
+    background-color: var(--primary-btn-bg);
+    border-radius: 5px;
+}
+
+.question-card {
+    background-color: var(--input-bg);
+    border-radius: var(--border-radius);
+    padding: 25px;
+    margin-top: 20px;
+    width: 100%;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.question-card p#question-text {
+    font-size: 1.3em;
+    margin-bottom: 20px;
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+.question-card input[type="text"]#answer {
+    width: calc(100% - 20px);
+    padding: 12px 10px;
+    border: 1px solid var(--input-border);
+    border-radius: var(--border-radius);
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    font-size: 1.1em;
+    outline: none;
+    margin-bottom: 20px;
+    transition: border-color 0.2s ease;
+}
+
+.question-card input[type="text"]#answer:focus {
+    border-color: var(--primary-btn-bg);
+}
+
+.quiz-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+    width: 100%;
+    justify-content: center;
+}
+
+/* Feedback Box */
+.feedback {
+    width: 100%;
+    padding: 15px;
+    border-radius: var(--border-radius);
+    text-align: left;
+    margin-top: 15px;
+    transition: background-color 0.3s ease;
+}
+
+.feedback h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.2em;
+}
+
+.feedback p {
+    margin-bottom: 0;
+    font-size: 0.95em;
+    line-height: 1.4;
+}
+
+.feedback.correct-feedback {
+    background-color: var(--success);
+    color: var(--text-color);
+}
+
+.feedback.incorrect-feedback {
+    background-color: var(--danger);
+    color: var(--text-color);
+}
+
+.hidden {
+    display: none !important;
+}
+
+.difficulty {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    font-weight: bold;
+    color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.difficulty-1 { background-color: #2ecc71; } /* Green */
+.difficulty-2 { background-color: #3498db; } /* Blue */
+.difficulty-3 { background-color: #f39c12; } /* Orange */
+.difficulty-4 { background-color: #e67e22; } /* Darker Orange */
+.difficulty-5 { background-color: var(--danger); } /* Red */
+
+
+/* Report Section specific styles */
+.chart-container {
+    width: 80%;
+    max-width: 350px;
+    margin: 20px auto;
+    position: relative;
+    height: 350px; /* Fixed height for Chart.js */
+}
+
+.report-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 30px;
+    width: 100%;
+    max-width: 300px;
+}
+
+.report-actions .btn {
+    width: 100%;
+}
+
+
+/* Settings Panel */
+.settings-panel {
+    position: fixed;
+    top: 0;
+    right: -350px;
+    width: 300px;
+    height: 100%;
+    background-color: var(--card-bg);
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
+    transition: right 0.3s ease-in-out;
+    padding: 20px;
+    box-sizing: border-box;
+    z-index: 1000;
+}
+
+.settings-panel.active {
+    right: 0;
+}
+
+.settings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    border-bottom: 1px solid var(--input-border);
+    padding-bottom: 15px;
+}
+
+.settings-header h2 {
+    margin: 0;
+    font-size: 1.5em;
+    color: var(--text-color);
+}
+
+.setting-group {
+    margin-bottom: 25px;
+}
+
+.setting-group h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.1em;
+    color: var(--text-color);
+    text-align: left;
+}
+
+.theme-options {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-start;
+}
+
+.theme-option {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 3px solid transparent;
+    transition: border-color 0.2s ease, transform 0.1s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.theme-option:hover {
+    transform: scale(1.05);
+}
+
+.theme-option.active {
+    border-color: var(--primary-btn-bg);
+    box-shadow: 0 0 0 2px var(--primary-btn-bg);
+}
+
+.dark-theme-swatch { background-color: #2c3e50; }
+.light-theme-swatch { background-color: #f0f2f5; border: 1px solid #ccc; }
+.purple-theme-swatch { background-color: #36294a; }
+
+/* Explanation toggle button specific styling */
+#toggle-explanation-btn {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    header {
+        padding: 10px 15px; /* Adjust header padding for smaller screens */
+    }
+    .container {
+        padding: 20px;
+        min-height: 450px;
+    }
+    .app-name {
+        font-size: 1.5em;
+    }
+    .app-icon {
+        font-size: 1.5em;
+    }
+    .icon-button {
+        font-size: 1.4em;
+    }
+    .btn {
+        padding: 10px 20px;
+        font-size: 0.9em;
+    }
+    .quiz-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .quiz-buttons .btn {
+        width: 100%;
+    }
+    .question-card p#question-text {
+        font-size: 1.1em;
+    }
+    .settings-panel {
+        width: 250px;
+    }
+}
+/* Add to your existing CSS */
+
+/* Skill/Concept Badge */
+.skill-concept {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    font-weight: bold;
+    color: var(--text-color); /* Use text color from theme */
+    background-color: var(--secondary-btn-bg); /* Use a neutral background, or pick a new color */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    margin-left: 10px; /* Space it from difficulty badge */
+    white-space: nowrap; /* Prevent wrapping for long skill names */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Add ellipsis if name is too long */
+    max-width: 180px; /* Limit width for long skill names */
+}
+
+/* Ensure quiz-header handles multiple badges */
+.quiz-header {
+    display: flex;
+    justify-content: space-between; /* Distribute items */
+    align-items: center;
+    width: 100%;
+    margin-bottom: 15px;
+    padding: 0 10px;
+    flex-wrap: wrap; /* Allow wrapping if space is tight */
+    gap: 10px; /* Gap between items in the header */
+}
+
+/* AI Insights Section */
+.ai-insights-section {
+    background-color: var(--input-bg); /* Use a slightly different background for distinction */
+    border-radius: var(--border-radius);
+    padding: 20px;
+    margin-top: 25px;
+    text-align: left;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.ai-insights-section h3 {
+    margin-top: 0;
+    color: var(--primary-btn-bg); /* Highlight the heading */
+    font-size: 1.3em;
+    margin-bottom: 15px;
+    border-bottom: 1px solid var(--input-border);
+    padding-bottom: 10px;
+}
+
+.ai-insights-section p {
+    margin-bottom: 10px;
+    line-height: 1.5;
+    font-size: 0.95em;
+}
+
+.ai-insights-section p:last-child {
+    margin-bottom: 0;
+}
+
+
+/* Responsive adjustments for new elements */
+@media (max-width: 480px) {
+    .skill-concept {
+        font-size: 0.8em;
+        max-width: 120px; /* Smaller max-width for tiny screens */
+    }
+    .ai-insights-section {
+        padding: 15px;
+    }
+    .ai-insights-section h3 {
+        font-size: 1.1em;
+    }
+    .ai-insights-section p {
+        font-size: 0.85em;
+    }
+}
+/* --- TTS Icon Button Styling --- */
+.tts-icon-btn {
+    background-color: #6c5ce7;
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    margin-top: 10px;
+    border-radius: 50px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.tts-icon-btn i {
+    pointer-events: none;
+}
+
+.tts-icon-btn:hover {
+    background-color: #4834d4;
+    transform: scale(1.05);
+}
+
+.tts-icon-btn:active {
+    transform: scale(0.95);
+}
