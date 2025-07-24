@@ -11,6 +11,8 @@ from reportlab.platypus import Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
 import matplotlib.pyplot as plt
 import io
+import csv
+from sympy import sympify, simplify
 
 logger = logging.getLogger(__name__)
 
@@ -354,7 +356,10 @@ def evaluate_answer(model, question, correct, user_answer):
         feedback_status = "Correct" if is_correct else "Incorrect"
         feedback_full_text = f"Judgment: {feedback_status} ({judgment_reason})\nExplanation: {explanation}"
 
-        return feedback_full_text
+        return {
+            "is_correct": is_correct,
+            "feedback": feedback_full_text
+        }
 
     except json.JSONDecodeError as jde:
         logger.error(f"Failed to decode JSON from AI evaluation response: {jde}. Raw response: {response_text}")
@@ -370,7 +375,7 @@ def evaluate_answer(model, question, correct, user_answer):
             return f"Judgment: Incorrect! (Evaluation failed due to API limit)\nExplanation: Could not fully evaluate your answer due to an API service issue. Your daily API quota might be exhausted. Please try again later. The correct answer was: {correct}"
         return f"Judgment: Incorrect! (Evaluation failed due to technical error)\nExplanation: Evaluation system encountered an unexpected error. Please try again. The correct answer was: {correct}"
 
-# ... (rest of your utils.py code) ...
+
 def normalize_math_expression(expr):
     """Normalize math expressions for comparison"""
     expr = re.sub(r'\s+', '', expr)  # Remove all whitespace
@@ -509,6 +514,74 @@ def create_score_chart(correct_count, incorrect_count, chart_path):
         logger.error(f"Chart creation error: {str(e)}", exc_info=True)
 
 
+def log_interaction_to_csv(session, question, user_answer, correct_answer, feedback, difficulty, is_correct):
+    """Appends a quiz interaction to the CSV log file."""
+    import csv
+    import os
+
+    filename = os.path.join(os.path.dirname(__file__), "user_interactions.csv")
+    file_exists = os.path.isfile(filename)
+
+    with open(filename, mode="a", newline="", encoding="utf-8") as csv_file:
+        fieldnames = ["timestamp", "username", "topic", "difficulty_level", "question", "user_answer", "correct_answer", "feedback", "is_correct"]
+        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+
+        if not file_exists:
+            writer.writeheader()
+
+        writer.writerow({
+            "timestamp": datetime.now().isoformat(),
+            "username": session.get("username", "Unknown"),
+            "topic": session.get("topic", "Unknown"),
+            "difficulty_level": difficulty,
+            "question": question,
+            "user_answer": user_answer,
+            "correct_answer": correct_answer,
+            "feedback": feedback,
+            "is_correct": is_correct
+        })
+
+
+
+# ✅ NEW: Route-style function for subtopic generation logic
+def generate_subtopics_and_questions(model, topic):
+    prompt = f"""
+    For the topic '{topic}', generate a list of 5 subtopics.
+    For each subtopic, include one example question related to it.
+
+    Output JSON format:
+    [
+      {{"subtopic": "...", "example_question": "..."}},
+      ... (5 entries total)
+    ]
+    """
+    try:
+        response = model.generate_content(prompt)
+        raw = response.text.strip()
+        json_part = extract_json_from_markdown(raw)
+        parsed = json.loads(json_part)
+
+        if not isinstance(parsed, list):
+            raise ValueError("Parsed subtopics are not a list.")
+        logger.info(f"Generated subtopics for topic '{topic}': {[s['subtopic'] for s in parsed]}")
+        return parsed
+    except Exception as e:
+        logger.error(f"Error generating subtopics and examples for {topic}: {str(e)}", exc_info=True)
+        return []
+
+def is_math_equivalent(user_ans: str, correct_ans: str) -> bool:
+    """
+    Compares two answers mathematically using sympy.
+    Returns True if they are mathematically the same.
+    """
+    try:
+        expr1 = sympify(str(user_ans).strip())
+        expr2 = sympify(str(correct_ans).strip())
+        return simplify(expr1 - expr2) == 0
+    except Exception as e:
+        logger.warning(f"Math equivalence check failed: {e}")
+        return False
+    
 def generate_report(model, session, final_score): # Added final_score parameter
     """Generates a PDF report of the quiz session, including skill-based performance and AI insights."""
     try:
